@@ -353,7 +353,6 @@ async def create_solution_idea(
         
         # Parse the JSON response to return the actual data
         if response and isinstance(response, str):
-            import json
             try:
                 parsed_response = json.loads(response)
                 return parsed_response
@@ -383,8 +382,6 @@ async def get_required_solution_idea_data() -> dict | None:
     WAR_FIGHTING_GAP_CATEGORIES_ENDPOINT = "/api/lookuptables/listwarfightinggapcategories"
     
     try:
-        import json
-        
         # Fetch organizations data
         opr_response = await make_request(f"{FORGE_API_BASE}{OPR_OCR_ENDPOINT}", method=HttpMethod.GET)
         organizations = []
@@ -473,7 +470,6 @@ async def get_solution_idea_list(
         
         # Parse the JSON response to return the actual data
         if response and isinstance(response, str):
-            import json
             try:
                 parsed_response = json.loads(response)
                 
