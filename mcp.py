@@ -122,8 +122,12 @@ async def make_request(url: str, method: HttpMethod, params: dict[str, Any] | No
         "User-Agent": USER_AGENT,
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
     }
+    cookies = {
+        "AcceptedNotice": "true",
+        "AcceptedClassification": "true"
+    }
     # Disable SSL verification for self-signed certificates
-    async with httpx.AsyncClient(verify=False) as client:
+    async with httpx.AsyncClient(verify=False, cookies=cookies) as client:
         try:
             logger.info(f"(make_request) Sending request to Forge API: {url}")
             if method == HttpMethod.GET:
