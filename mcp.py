@@ -113,16 +113,17 @@ class HttpMethod(Enum):
 
 # Add MCP functionality with decorators
 # Constants
-FORGE_API_BASE = "http://localhost:8042"
+FORGE_API_BASE = "https://localhost:8042"  # Changed to HTTPS for self-signed cert
 USER_AGENT = "Army-Forge-mcp/0.1"
 
 async def make_request(url: str, method: HttpMethod, params: dict[str, Any] | None = None) -> str | None:
-    """Make a request to the Army publications API with proper error handling."""
+    """Make a request to the Forge API with proper error handling and SSL verification disabled for self-signed certs."""
     headers = {
         "User-Agent": USER_AGENT,
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
     }
-    async with httpx.AsyncClient() as client:
+    # Disable SSL verification for self-signed certificates
+    async with httpx.AsyncClient(verify=False) as client:
         try:
             logger.info(f"(make_request) Sending request to Forge API: {url}")
             if method == HttpMethod.GET:
