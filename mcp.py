@@ -142,7 +142,7 @@ async def make_request(url: str, method: HttpMethod, params: dict[str, Any] | No
             return response.text
         except Exception as e:
             logger.error(f"(make_request) Error making request: {e}")
-            return e
+            return f'Error: {e}'
 
 @mcp.tool()
 # async def create_concept(concept: ConceptGeneralInformationDto) -> list[dict[str, Any]]:  This should work, but it seems to be a bug in FastMCP
@@ -233,6 +233,16 @@ async def create_concept(PocId: Annotated[str, Field(description="Point of Conta
         logger.info(f"Creating concept with data: {concept_dict}")
         print(f"Creating concept with data: {concept_dict}")  # Force to stdout
         response = await make_request(f"{FORGE_API_BASE}{TOOL_ENDPOINT}", method=HttpMethod.POST, params=concept_dict)
+        
+        # Parse the JSON response to return the actual data
+        if response and isinstance(response, str):
+            import json
+            try:
+                parsed_response = json.loads(response)
+                return parsed_response
+            except json.JSONDecodeError:
+                logger.error(f"Failed to parse JSON response: {response}")
+                return response
         return response
     except Exception as e:
         logger.error(f"Error creating concept: {e}")
@@ -289,6 +299,16 @@ async def create_solution_idea(
         logger.info(f"Creating solution idea with data: {payload}")
         print(f"Creating solution idea with data: {payload}")
         response = await make_request(f"{FORGE_API_BASE}{TOOL_ENDPOINT}", method=HttpMethod.POST, params=payload)
+        
+        # Parse the JSON response to return the actual data
+        if response and isinstance(response, str):
+            import json
+            try:
+                parsed_response = json.loads(response)
+                return parsed_response
+            except json.JSONDecodeError:
+                logger.error(f"Failed to parse JSON response: {response}")
+                return response
         return response
     except Exception as e:
         logger.error(f"Error creating solution idea: {e}")
