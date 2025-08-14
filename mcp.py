@@ -113,7 +113,7 @@ class HttpMethod(Enum):
 
 # Add MCP functionality with decorators
 # Constants
-FORGE_API_BASE = "https://localhost:8042"  # Changed to HTTPS for self-signed cert
+FORGE_API_BASE = "http://localhost:8042"  # Changed to HTTPS for self-signed cert
 USER_AGENT = "Army-Forge-mcp/0.1"
 
 async def make_request(url: str, method: HttpMethod, params: dict[str, Any] | None = None) -> str | None:
@@ -129,6 +129,7 @@ async def make_request(url: str, method: HttpMethod, params: dict[str, Any] | No
     logger.info(f"(make_request) URL: {url},\n Method: {method},\n Params: {params}")
     # Disable SSL verification for self-signed certificates
     async with httpx.AsyncClient(verify=False, cookies=cookies) as client:
+
         try:
             logger.info(f"(make_request) Sending request to Forge API: {url}")
             if method == HttpMethod.GET:
@@ -252,10 +253,10 @@ async def make_request(url: str, method: HttpMethod, params: dict[str, Any] | No
 async def create_solution_idea(
     ShortName: Annotated[str, Field(description="Short name of the solution idea. Example: 'Advanced Combat Vehicle System'")],
     Description: Annotated[str, Field(description="Detailed description of the solution idea. Example: 'Next-generation armored vehicle with enhanced protection and mobility capabilities'")],
-    DomainId: Annotated[str, Field(description="Domain ID for the solution. Example: '6c6235e6-d1cc-ee11-b8ae-0003ff0c7f2f'")],
-    GapCategoryIds: Annotated[list[str], Field(description="List of gap category IDs that this solution addresses. Example: ['64e20793-0aab-4b79-aa0e-f7eb3c1df4e4', 'another-gap-id']")],
-    OcrProponentIds: Annotated[list[str], Field(description="List of OCR proponent organization IDs. Example: ['94df18c7-3f93-400e-9196-a2de00d79315']")],
-    OrgGuid: Annotated[str, Field(description="Organization GUID of the primary organization. Example: '94df18c7-3f93-400e-9196-a2de00d79315'")],
+    # DomainId: Annotated[str, Field(description="Domain ID for the solution. Example: '6c6235e6-d1cc-ee11-b8ae-0003ff0c7f2f'")],
+    # GapCategoryIds: Annotated[list[str], Field(description="List of gap category IDs that this solution addresses. Example: ['64e20793-0aab-4b79-aa0e-f7eb3c1df4e4', 'another-gap-id']")],
+    # OcrProponentIds: Annotated[list[str], Field(description="List of OCR proponent organization IDs. Example: ['94df18c7-3f93-400e-9196-a2de00d79315']")],
+    # OrgGuid: Annotated[str, Field(description="Organization GUID of the primary organization. Example: '94df18c7-3f93-400e-9196-a2de00d79315'")],
     # WorkflowStepId: Annotated[int, Field(description="Workflow step ID")] = 0,
     # ClassificationGuid: Annotated[str, Field(description="Classification GUID for security classification. Example: '44af16dd-5bdd-ee11-8076-0003ff0c7f2f'")] = None,
     # SolutionIdeaId: Annotated[str, Field(description="Solution Idea ID (auto-generated if not provided). Example: 'solution-123-guid'")] = None,
@@ -280,15 +281,15 @@ async def create_solution_idea(
             # "SolutionIdeaId": SolutionIdeaId,
             "ShortName": ShortName,
             "Description": Description,
-            "DomainId": DomainId,
-            # "FcwConceptId": FcwConceptId,
-            # "CrcEchelonIds": CrcEchelonIds or [],
-            # "PossibleIocDate": PossibleIocDate,
-            # "IsSnt": IsSnt,
-            # "CriticalPath": CriticalPath,
-            "GapCategoryIds": GapCategoryIds,
-            "OcrProponentIds": OcrProponentIds,
-            "OrgGuid": OrgGuid,
+            # "DomainId": DomainId,
+            # # "FcwConceptId": FcwConceptId,
+            # # "CrcEchelonIds": CrcEchelonIds or [],
+            # # "PossibleIocDate": PossibleIocDate,
+            # # "IsSnt": IsSnt,
+            # # "CriticalPath": CriticalPath,
+            # "GapCategoryIds": GapCategoryIds,
+            # "OcrProponentIds": OcrProponentIds,
+            # "OrgGuid": OrgGuid,
             # "WorkflowStepId": WorkflowStepId,
             # "ClassificationGuid": ClassificationGuid
         }
