@@ -126,6 +126,7 @@ async def make_request(url: str, method: HttpMethod, params: dict[str, Any] | No
         "AcceptedNotice": "true",
         "AcceptedClassification": "true"
     }
+    logger.info(f"(make_request) URL: {url},\n Method: {method},\n Params: {params}")
     # Disable SSL verification for self-signed certificates
     async with httpx.AsyncClient(verify=False, cookies=cookies) as client:
         try:
