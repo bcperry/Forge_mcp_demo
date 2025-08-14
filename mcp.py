@@ -240,20 +240,20 @@ async def create_concept(PocId: Annotated[str, Field(description="Point of Conta
 
 @mcp.tool()
 async def create_solution_idea(
-    ShortName: Annotated[str, Field(description="Short name of the solution idea")],
-    Description: Annotated[str, Field(description="Description of the solution idea")],
-    DomainId: Annotated[str, Field(description="Domain ID for the solution")],
-    GapCategoryIds: Annotated[list[str], Field(description="A comma separated list of List of gap category IDs, provided in square brackets ex: [<ID1>, <ID2>]")],
-    OcrProponentIds: Annotated[list[str], Field(description="A comma separated list of List of OCR proponent organization IDs, provided in square brackets ex: [<ID1>, <ID2>]")],
-    OrgGuid: Annotated[str, Field(description="Organization GUID")],
+    ShortName: Annotated[str, Field(description="Short name of the solution idea. Example: 'Advanced Combat Vehicle System'")],
+    Description: Annotated[str, Field(description="Detailed description of the solution idea. Example: 'Next-generation armored vehicle with enhanced protection and mobility capabilities'")],
+    DomainId: Annotated[str, Field(description="Domain ID for the solution. Example: '6c6235e6-d1cc-ee11-b8ae-0003ff0c7f2f'")],
+    GapCategoryIds: Annotated[list[str], Field(description="List of gap category IDs that this solution addresses. Example: ['64e20793-0aab-4b79-aa0e-f7eb3c1df4e4', 'another-gap-id']")],
+    OcrProponentIds: Annotated[list[str], Field(description="List of OCR proponent organization IDs. Example: ['94df18c7-3f93-400e-9196-a2de00d79315']")],
+    OrgGuid: Annotated[str, Field(description="Organization GUID of the primary organization. Example: '94df18c7-3f93-400e-9196-a2de00d79315'")],
     # WorkflowStepId: Annotated[int, Field(description="Workflow step ID")] = 0,
-    ClassificationGuid: Annotated[str, Field(description="Classification GUID")] = None,
-    SolutionIdeaId: Annotated[str, Field(description="Solution Idea ID")] = None,
-    FcwConceptId: Annotated[str, Field(description="FCW Concept ID")] = None,
-    CrcEchelonIds: Annotated[list[str], Field(description="A comma separated list of List of CRC echelon IDs, provided in square brackets ex: [<ID1>, <ID2>]")] = None,
-    PossibleIocDate: Annotated[str, Field(description="Possible IOC date in ISO format")] = None,
-    IsSnt: Annotated[bool, Field(description="Is SNT (Science and Technology)")] = False,
-    CriticalPath: Annotated[bool, Field(description="Is on critical path")] = False
+    ClassificationGuid: Annotated[str, Field(description="Classification GUID for security classification. Example: '44af16dd-5bdd-ee11-8076-0003ff0c7f2f'")] = None,
+    SolutionIdeaId: Annotated[str, Field(description="Solution Idea ID (auto-generated if not provided). Example: 'solution-123-guid'")] = None,
+    FcwConceptId: Annotated[str, Field(description="FCW Concept ID if related to a Future Combat Vehicle concept. Example: 'fcw-concept-456-guid'")] = None,
+    CrcEchelonIds: Annotated[list[str], Field(description="List of CRC echelon IDs. Example: ['echelon-1-guid', 'echelon-2-guid']")] = None,
+    PossibleIocDate: Annotated[str, Field(description="Possible Initial Operating Capability date in ISO format. Example: '2025-08-31T04:00:00.000Z'")] = None,
+    IsSnt: Annotated[bool, Field(description="Is SNT (Science and Technology) flag. Example: false")] = False,
+    CriticalPath: Annotated[bool, Field(description="Is on critical path flag. Example: false")] = False
 ) -> str | None:
     """Create a solution idea in the Forge Pathfinder system.
     
