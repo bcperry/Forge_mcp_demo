@@ -235,71 +235,51 @@ async def create_concept(PocId: Annotated[str, Field(description="Point of Conta
 
 @mcp.tool()
 async def create_solution_idea(
-    MappingId: Annotated[str, Field(description="Mapping ID")] = None,
-    RsaId: Annotated[int, Field(description="RSA ID")] = None,
+    ShortName: Annotated[str, Field(description="Short name of the solution idea")],
+    Description: Annotated[str, Field(description="Description of the solution idea")],
+    DomainId: Annotated[str, Field(description="Domain ID for the solution")],
+    GapCategoryIds: Annotated[list[str], Field(description="List of gap category IDs")],
+    OcrProponentIds: Annotated[list[str], Field(description="List of OCR proponent organization IDs")],
+    OrgGuid: Annotated[str, Field(description="Organization GUID")],
+    WorkflowStepId: Annotated[int, Field(description="Workflow step ID")] = 0,
+    ClassificationGuid: Annotated[str, Field(description="Classification GUID")] = None,
     SolutionIdeaId: Annotated[str, Field(description="Solution Idea ID")] = None,
-    GapCodeId: Annotated[str, Field(description="Gap Code ID")] = None,
-    ShortName: Annotated[str, Field(description="Short name of the solution idea")] = None,
-    Description: Annotated[str, Field(description="Description of the solution idea")] = None,
-    Domain: Annotated[str, Field(description="Domain of the solution")] = None,
-    OprProponent: Annotated[str, Field(description="Operational proponent")] = None,
-    Comments: Annotated[str, Field(description="Comments about the solution idea")] = None,
-    TechnicalRisk: Annotated[str, Field(description="Technical risk assessment")] = None,
-    Supportability: Annotated[str, Field(description="Supportability assessment")] = None,
-    Affordability: Annotated[str, Field(description="Affordability assessment")] = None,
-    Availability: Annotated[str, Field(description="Availability assessment")] = None,
-    ApprovedToRsa: Annotated[bool, Field(description="Whether approved to RSA")] = None,
-    StudyLead: Annotated[str, Field(description="Study lead contact")] = None,
-    StudyLeadComment: Annotated[str, Field(description="Study lead comments")] = None,
-    MitigationExtentId: Annotated[str, Field(description="Mitigation extent ID")] = None,
-    MitigationExtent: Annotated[str, Field(description="Mitigation extent description")] = None,
-    MitigationExtentOrderNbr: Annotated[int, Field(description="Mitigation extent order number")] = None,
-    CdidSolutionPriority: Annotated[int, Field(description="CDID solution priority number")] = None,
-    TechnicalReadinessLevel: Annotated[str, Field(description="Technical readiness level")] = None,
-    FeasibilityDegree: Annotated[str, Field(description="Feasibility degree assessment")] = None,
-    MappedGaps: Annotated[list, Field(description="List of mapped gaps")] = None,
-    MappedGapNames: Annotated[str, Field(description="Names of mapped gaps")] = None
+    FcwConceptId: Annotated[str, Field(description="FCW Concept ID")] = None,
+    CrcEchelonIds: Annotated[list[str], Field(description="List of CRC echelon IDs")] = None,
+    PossibleIocDate: Annotated[str, Field(description="Possible IOC date in ISO format")] = None,
+    IsSnt: Annotated[bool, Field(description="Is SNT (Science and Technology)")] = False,
+    CriticalPath: Annotated[bool, Field(description="Is on critical path")] = False
 ) -> str | None:
     """Create a solution idea in the Forge Pathfinder system.
     
-    This tool creates a new solution idea with RSA (Requirements Solution Analysis) mapping
-    that can be used to address capability gaps identified in assessments. Ensure that you have retrieved the
-    mandatory solution information before using this tool, and only use that data as inputs.
+    This tool creates a new solution idea with the required general information structure
+    that can be used to address capability gaps identified in assessments.
     """
     
-    solution_idea = RsaSolutionIdeaDto(
-        MappingId=MappingId,
-        RsaId=RsaId,
-        SolutionIdeaId=SolutionIdeaId,
-        GapCodeId=GapCodeId,
-        ShortName=ShortName,
-        Description=Description,
-        Domain=Domain,
-        OprProponent=OprProponent,
-        Comments=Comments,
-        TechnicalRisk=TechnicalRisk,
-        Supportability=Supportability,
-        Affordability=Affordability,
-        Availability=Availability,
-        ApprovedToRsa=ApprovedToRsa,
-        StudyLead=StudyLead,
-        StudyLeadComment=StudyLeadComment,
-        MitigationExtentId=MitigationExtentId,
-        MitigationExtent=MitigationExtent,
-        MitigationExtentOrderNbr=MitigationExtentOrderNbr,
-        CdidSolutionPriority=CdidSolutionPriority,
-        TechnicalReadinessLevel=TechnicalReadinessLevel,
-        FeasibilityDegree=FeasibilityDegree,
-        MappedGaps=MappedGaps,
-        MappedGapNames=MappedGapNames
-    )
+    # Create the payload structure matching the required format
+    payload = {
+        "GeneralInformation": {
+            "SolutionIdeaId": SolutionIdeaId,
+            "ShortName": ShortName,
+            "Description": Description,
+            "DomainId": DomainId,
+            "FcwConceptId": FcwConceptId,
+            "CrcEchelonIds": CrcEchelonIds or [],
+            "PossibleIocDate": PossibleIocDate,
+            "IsSnt": IsSnt,
+            "CriticalPath": CriticalPath,
+            "GapCategoryIds": GapCategoryIds,
+            "OcrProponentIds": OcrProponentIds,
+            "OrgGuid": OrgGuid,
+            "WorkflowStepId": WorkflowStepId,
+            "ClassificationGuid": ClassificationGuid
+        }
+    }
 
     TOOL_ENDPOINT = "/api/pathfinder/SolutionIdeas"
     try:
-        # Convert Pydantic model to dictionary for JSON serialization
-        solution_idea_dict = solution_idea.model_dump()
-        logger.info(f"Creating solution idea with data: {solution_idea_dict}")
-        response = await make_request(f"{FORGE_API_BASE}{TOOL_ENDPOINT}", method=HttpMethod.POST, params=solution_idea_dict)
+        logger.info(f"Creating solution idea with data: {payload}")
+        response = await make_request(f"{FORGE_API_BASE}{TOOL_ENDPOINT}", method=HttpMethod.POST, params=payload)
         return response
     except Exception as e:
         logger.error(f"Error creating solution idea: {e}")
