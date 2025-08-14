@@ -302,17 +302,19 @@ async def create_solution_idea(
 
 @mcp.tool()
 async def get_required_solution_idea_data() -> dict | None:
-    """Get organization and idea type data for solution ideas from the Forge API.
+    """Get organization, idea type, and warfighting gap data for solution ideas from the Forge API.
     
     Returns a dictionary containing:
     - organizations: List of organization objects with OrganizationGuid, OrganizationName, etc.
     - ideaTypes: List of domain/idea type objects with DomainId, DomainCode, DomainText, etc.
+    - warfightingGaps: List of warfighting gap categories with Key, Value, Code
     """
     OPR_OCR_ENDPOINT = "/api/lookuptables/organizations"
     IDEA_TYPE_ENDPOINT = "/api/lookuptables/ideaTypes"
+    WAR_FIGHTING_GAP_CATEGORIES_ENDPOINT = "/api/lookuptables/listwarfightinggapcategories"
     
     try:
-        
+        import json
         
         # Fetch organizations data
         opr_response = await make_request(f"{FORGE_API_BASE}{OPR_OCR_ENDPOINT}", method=HttpMethod.GET)
@@ -334,10 +336,21 @@ async def get_required_solution_idea_data() -> dict | None:
             else:
                 logger.warning("Unexpected idea type response structure")
         
+        # Fetch warfighting gap categories data
+        warfighting_gap_response = await make_request(f"{FORGE_API_BASE}{WAR_FIGHTING_GAP_CATEGORIES_ENDPOINT}", method=HttpMethod.GET)
+        warfighting_gaps = []
+        if warfighting_gap_response and isinstance(warfighting_gap_response, str):
+            parsed_gap_response = json.loads(warfighting_gap_response)
+            if "data" in parsed_gap_response and "data" in parsed_gap_response["data"]:
+                warfighting_gaps = parsed_gap_response["data"]["data"]
+            else:
+                logger.warning("Unexpected warfighting gap response structure")
+        
         # Return combined data
         return {
             "organizations": organizations,
-            "ideaTypes": idea_types
+            "ideaTypes": idea_types,
+            "warfightingGaps": warfighting_gaps
         }
         
     except Exception as e:
