@@ -274,19 +274,36 @@ async def create_solution_idea(
     
     logger.info("=== MCP TOOL CALLED: create_solution_idea ===")
     print("=== MCP TOOL CALLED: create_solution_idea ===")  # Force to stdout
+
+    # Print and log all inputs for debugging
+    logger.info(f"create_solution_idea inputs:")
+    logger.info(f"  ShortName: {ShortName}")
+    logger.info(f"  Description: {Description}")
+    logger.info(f"  DomainId: {DomainId}")
+    logger.info(f"  GapCategoryIds: {GapCategoryIds}")
+    logger.info(f"  OcrProponentIds: {OcrProponentIds}")
+    logger.info(f"  OrgGuid: {OrgGuid}")
+
+    print(f"create_solution_idea inputs:")
+    print(f"  ShortName: {ShortName}")
+    print(f"  Description: {Description}")
+    print(f"  DomainId: {DomainId}")
+    print(f"  GapCategoryIds: {GapCategoryIds}")
+    print(f"  OcrProponentIds: {OcrProponentIds}")
+    print(f"  OrgGuid: {OrgGuid}")
     
-    # Convert string parameters to lists
+    # Convert string parameters to lists (assume comma-separated format)
     try:
-        # Try to parse as JSON first, fallback to comma-separated
-        gap_category_list = json.loads(GapCategoryIds) if GapCategoryIds.startswith('[') else [id.strip() for id in GapCategoryIds.split(',')]
-        ocr_proponent_list = json.loads(OcrProponentIds) if OcrProponentIds.startswith('[') else [id.strip() for id in OcrProponentIds.split(',')]
-    except (json.JSONDecodeError, AttributeError):
-        # If parsing fails, treat as single items
-        gap_category_list = [GapCategoryIds] if GapCategoryIds else []
-        ocr_proponent_list = [OcrProponentIds] if OcrProponentIds else []
+        gap_category_list = [id.strip() for id in GapCategoryIds.split(',') if id.strip()]
+        ocr_proponent_list = [id.strip() for id in OcrProponentIds.split(',') if id.strip()]
+    except AttributeError:
+        # If split fails (None values), treat as empty lists
+        gap_category_list = []
+        ocr_proponent_list = []
     
     # Create the payload structure matching the required format
     payload = {
+
         "GeneralInformation": {
             # "SolutionIdeaId": SolutionIdeaId,
             "ShortName": ShortName,
@@ -386,7 +403,83 @@ async def get_required_solution_idea_data() -> dict | None:
         logger.error(f"Error fetching solution idea data: {e}")
         return None
     
-
+@mcp.tool()
+async def get_solution_idea_list(
+) -> dict | None:
+    """Get all non-deleted Solution Sets from the Forge Pathfinder system.
+    
+    This tool retrieves a list of solution sets that can contain multiple solution ideas.
+    Solution sets are used to group related solution ideas together for easier management
+    and assessment mapping.
+    
+    Args:
+        loadoptions: Optional JSON string with DataSourceLoadOptions for filtering/paging
+        
+    Returns:
+        Dictionary containing solution sets data with structure:
+        {
+            "data": [
+                {
+                    "SolutionSetId": "guid",
+                    "SolutionSetName": "Name",
+                    "SolutionSetDescription": "Description",
+                    "Crcs": [...],
+                    "CrcNames": "string",
+                    "ModifiedDate": "ISO date",
+                    "SolutionIdeaCount": 0,
+                    "ConceptNotionId": "guid"
+                }
+            ],
+            "totalCount": 0
+        }
+    """
+    
+    logger.info("=== MCP TOOL CALLED: get_solution_idea_list (Solution Sets) ===")
+    print("=== MCP TOOL CALLED: get_solution_idea_list (Solution Sets) ===")  # Force to stdout
+    
+    SOLUTION_SETS_ENDPOINT = "/api/pathfinder/SolutionSets"
+    
+    try:
+        # Parse loadoptions if provided
+        params = {}
+        if loadoptions:
+            try:
+                import json
+                parsed_options = json.loads(loadoptions)
+                params.update(parsed_options)
+                logger.info(f"Using load options: {parsed_options}")
+            except json.JSONDecodeError:
+                logger.warning(f"Failed to parse loadoptions JSON: {loadoptions}")
+        
+        logger.info(f"Fetching solution sets with params: {params}")
+        print(f"Fetching solution sets with params: {params}")
+        
+        response = await make_request(f"{FORGE_API_BASE}{SOLUTION_SETS_ENDPOINT}", method=HttpMethod.GET, params=params)
+        
+        # Parse the JSON response to return the actual data
+        if response and isinstance(response, str):
+            import json
+            try:
+                parsed_response = json.loads(response)
+                
+                # Check if response has the expected structure
+                if "data" in parsed_response:
+                    logger.info(f"Successfully fetched {len(parsed_response.get('data', []))} solution sets")
+                    return parsed_response
+                else:
+                    # If the response doesn't have expected structure, return it as-is
+                    logger.warning("Response doesn't have expected 'data' structure")
+                    return {"data": parsed_response, "totalCount": len(parsed_response) if isinstance(parsed_response, list) else 0}
+                    
+            except json.JSONDecodeError:
+                logger.error(f"Failed to parse JSON response: {response}")
+                return {"error": "Failed to parse response", "raw_response": response}
+        
+        return {"data": [], "totalCount": 0}
+        
+    except Exception as e:
+        logger.error(f"Error fetching solution sets: {e}")
+        return {"error": f"Error fetching solution sets: {e}"}
 
 
 if __name__ == "__main__":
