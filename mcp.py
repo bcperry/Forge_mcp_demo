@@ -292,13 +292,36 @@ async def create_solution_idea(
     print(f"  OcrProponentIds: {OcrProponentIds}")
     print(f"  OrgGuid: {OrgGuid}")
     
-    # Convert string parameters to lists (assume comma-separated format)
+    # Convert string parameters to lists (handle both JSON and comma-separated formats)
+    logger.info(f"Raw GapCategoryIds: {GapCategoryIds}")
+    logger.info(f"Raw OcrProponentIds: {OcrProponentIds}")
+    
     try:
-        gap_category_list = [id.strip() for id in GapCategoryIds.split(',') if id.strip()]
-        ocr_proponent_list = [id.strip() for id in OcrProponentIds.split(',') if id.strip()]
-    except AttributeError:
-        # If split fails (None values), treat as empty lists
+        # First try to parse as JSON array
+        if GapCategoryIds.startswith('[') and GapCategoryIds.endswith(']'):
+            gap_category_list = json.loads(GapCategoryIds)
+            logger.info(f"Parsed GapCategoryIds as JSON: {gap_category_list}")
+        else:
+            # Fall back to comma-separated format
+            gap_category_list = [id.strip() for id in GapCategoryIds.split(',') if id.strip()]
+            logger.info(f"Parsed GapCategoryIds as CSV: {gap_category_list}")
+    except (AttributeError, json.JSONDecodeError) as e:
+        # If parsing fails, treat as empty list
+        logger.error(f"Failed to parse GapCategoryIds: {e}")
         gap_category_list = []
+    
+    try:
+        # First try to parse as JSON array
+        if OcrProponentIds.startswith('[') and OcrProponentIds.endswith(']'):
+            ocr_proponent_list = json.loads(OcrProponentIds)
+            logger.info(f"Parsed OcrProponentIds as JSON: {ocr_proponent_list}")
+        else:
+            # Fall back to comma-separated format
+            ocr_proponent_list = [id.strip() for id in OcrProponentIds.split(',') if id.strip()]
+            logger.info(f"Parsed OcrProponentIds as CSV: {ocr_proponent_list}")
+    except (AttributeError, json.JSONDecodeError) as e:
+        # If parsing fails, treat as empty list
+        logger.error(f"Failed to parse OcrProponentIds: {e}")
         ocr_proponent_list = []
     
     # Create the payload structure matching the required format
@@ -442,14 +465,6 @@ async def get_solution_idea_list(
     try:
         # Parse loadoptions if provided
         params = {}
-        if loadoptions:
-            try:
-                import json
-                parsed_options = json.loads(loadoptions)
-                params.update(parsed_options)
-                logger.info(f"Using load options: {parsed_options}")
-            except json.JSONDecodeError:
-                logger.warning(f"Failed to parse loadoptions JSON: {loadoptions}")
         
         logger.info(f"Fetching solution sets with params: {params}")
         print(f"Fetching solution sets with params: {params}")
