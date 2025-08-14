@@ -182,7 +182,10 @@ async def create_concept(PocId: Annotated[str, Field(description="Point of Conta
     IsFcw: bool = False) -> str | None:
     """Create a concept for use in the Forge application.
     """
-
+    
+    logger.info("=== MCP TOOL CALLED: create_concept ===")
+    print("=== MCP TOOL CALLED: create_concept ===")  # Force to stdout
+    
     concept = ConceptGeneralInformationDto(
         Id=Id,
         Name=Name,
@@ -227,6 +230,7 @@ async def create_concept(PocId: Annotated[str, Field(description="Point of Conta
         # Convert Pydantic model to dictionary for JSON serialization
         concept_dict = concept.model_dump()
         logger.info(f"Creating concept with data: {concept_dict}")
+        print(f"Creating concept with data: {concept_dict}")  # Force to stdout
         response = await make_request(f"{FORGE_API_BASE}{TOOL_ENDPOINT}", method=HttpMethod.POST, params=concept_dict)
         return response
     except Exception as e:
@@ -256,6 +260,9 @@ async def create_solution_idea(
     that can be used to address capability gaps identified in assessments.
     """
     
+    logger.info("=== MCP TOOL CALLED: create_solution_idea ===")
+    print("=== MCP TOOL CALLED: create_solution_idea ===")  # Force to stdout
+    
     # Create the payload structure matching the required format
     payload = {
         "GeneralInformation": {
@@ -279,6 +286,7 @@ async def create_solution_idea(
     TOOL_ENDPOINT = "/api/pathfinder/SolutionIdeas"
     try:
         logger.info(f"Creating solution idea with data: {payload}")
+        print(f"Creating solution idea with data: {payload}")
         response = await make_request(f"{FORGE_API_BASE}{TOOL_ENDPOINT}", method=HttpMethod.POST, params=payload)
         return response
     except Exception as e:
@@ -294,6 +302,10 @@ async def get_required_solution_idea_data() -> dict | None:
     - ideaTypes: List of domain/idea type objects with DomainId, DomainCode, DomainText, etc.
     - warfightingGaps: List of warfighting gap categories with Key, Value, Code
     """
+    
+    logger.info("=== MCP TOOL CALLED: get_required_solution_idea_data ===")
+    print("=== MCP TOOL CALLED: get_required_solution_idea_data ===")  # Force to stdout
+    
     OPR_OCR_ENDPOINT = "/api/lookuptables/organizations"
     IDEA_TYPE_ENDPOINT = "/api/lookuptables/domains"
     WAR_FIGHTING_GAP_CATEGORIES_ENDPOINT = "/api/lookuptables/listwarfightinggapcategories"
