@@ -1,9 +1,14 @@
 from typing import Any
 from enum import Enum
 import httpx
+import logging
 from fastmcp import FastMCP
 from pydantic import BaseModel, Field
 from typing import Optional, Annotated
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 from stubapi.models import (
     ActivityApprovalStatusDto,
@@ -118,18 +123,18 @@ async def make_request(url: str, method: HttpMethod, params: dict[str, Any] | No
     }
     async with httpx.AsyncClient() as client:
         try:
-            print(f"(make_request) Sending request to Forge API: {url}")
+            logger.info(f"(make_request) Sending request to Forge API: {url}")
             if method == HttpMethod.GET:
                 response = await client.get(url, headers=headers, params=params, timeout=30.0)
             elif method == HttpMethod.POST:
                 response = await client.post(url, headers=headers, json=params, timeout=30.0)
             else:
                 raise ValueError(f"Unsupported HTTP method: {method}")
-            print(f"(make_request) Response status code: {response.status_code}")
+            logger.info(f"(make_request) Response status code: {response.status_code}")
             response.raise_for_status()
             return response.text
         except Exception as e:
-            print(f"(make_request) Error making request: {e}")
+            logger.error(f"(make_request) Error making request: {e}")
             return e
 
 @mcp.tool()
@@ -215,12 +220,84 @@ async def create_concept(PocId: Annotated[str, Field(description="Point of Conta
     try:
         # Convert Pydantic model to dictionary for JSON serialization
         concept_dict = concept.model_dump()
-        print(f"Creating concept with data: {concept_dict}")
+        logger.info(f"Creating concept with data: {concept_dict}")
         response = await make_request(f"{FORGE_API_BASE}{TOOL_ENDPOINT}", method=HttpMethod.POST, params=concept_dict)
         return response
     except Exception as e:
-        print(f"Error creating concept: {e}")
+        logger.error(f"Error creating concept: {e}")
         return f"Error creating concept: {e}"
+
+@mcp.tool()
+async def create_solution_idea(
+    MappingId: Annotated[str, Field(description="Mapping ID")] = None,
+    RsaId: Annotated[int, Field(description="RSA ID")] = None,
+    SolutionIdeaId: Annotated[str, Field(description="Solution Idea ID")] = None,
+    GapCodeId: Annotated[str, Field(description="Gap Code ID")] = None,
+    ShortName: Annotated[str, Field(description="Short name of the solution idea")] = None,
+    Description: Annotated[str, Field(description="Description of the solution idea")] = None,
+    Domain: Annotated[str, Field(description="Domain of the solution")] = None,
+    OprProponent: Annotated[str, Field(description="Operational proponent")] = None,
+    Comments: Annotated[str, Field(description="Comments about the solution idea")] = None,
+    TechnicalRisk: Annotated[str, Field(description="Technical risk assessment")] = None,
+    Supportability: Annotated[str, Field(description="Supportability assessment")] = None,
+    Affordability: Annotated[str, Field(description="Affordability assessment")] = None,
+    Availability: Annotated[str, Field(description="Availability assessment")] = None,
+    ApprovedToRsa: Annotated[bool, Field(description="Whether approved to RSA")] = None,
+    StudyLead: Annotated[str, Field(description="Study lead contact")] = None,
+    StudyLeadComment: Annotated[str, Field(description="Study lead comments")] = None,
+    MitigationExtentId: Annotated[str, Field(description="Mitigation extent ID")] = None,
+    MitigationExtent: Annotated[str, Field(description="Mitigation extent description")] = None,
+    MitigationExtentOrderNbr: Annotated[int, Field(description="Mitigation extent order number")] = None,
+    CdidSolutionPriority: Annotated[int, Field(description="CDID solution priority number")] = None,
+    TechnicalReadinessLevel: Annotated[str, Field(description="Technical readiness level")] = None,
+    FeasibilityDegree: Annotated[str, Field(description="Feasibility degree assessment")] = None,
+    MappedGaps: Annotated[list, Field(description="List of mapped gaps")] = None,
+    MappedGapNames: Annotated[str, Field(description="Names of mapped gaps")] = None
+) -> str | None:
+    """Create a solution idea in the Forge Pathfinder system.
+    
+    This tool creates a new solution idea with RSA (Requirements Solution Analysis) mapping
+    that can be used to address capability gaps identified in assessments.
+    """
+    
+    solution_idea = RsaSolutionIdeaDto(
+        MappingId=MappingId,
+        RsaId=RsaId,
+        SolutionIdeaId=SolutionIdeaId,
+        GapCodeId=GapCodeId,
+        ShortName=ShortName,
+        Description=Description,
+        Domain=Domain,
+        OprProponent=OprProponent,
+        Comments=Comments,
+        TechnicalRisk=TechnicalRisk,
+        Supportability=Supportability,
+        Affordability=Affordability,
+        Availability=Availability,
+        ApprovedToRsa=ApprovedToRsa,
+        StudyLead=StudyLead,
+        StudyLeadComment=StudyLeadComment,
+        MitigationExtentId=MitigationExtentId,
+        MitigationExtent=MitigationExtent,
+        MitigationExtentOrderNbr=MitigationExtentOrderNbr,
+        CdidSolutionPriority=CdidSolutionPriority,
+        TechnicalReadinessLevel=TechnicalReadinessLevel,
+        FeasibilityDegree=FeasibilityDegree,
+        MappedGaps=MappedGaps,
+        MappedGapNames=MappedGapNames
+    )
+
+    TOOL_ENDPOINT = "/api/pathfinder/SolutionIdeas"
+    try:
+        # Convert Pydantic model to dictionary for JSON serialization
+        solution_idea_dict = solution_idea.model_dump()
+        logger.info(f"Creating solution idea with data: {solution_idea_dict}")
+        response = await make_request(f"{FORGE_API_BASE}{TOOL_ENDPOINT}", method=HttpMethod.POST, params=solution_idea_dict)
+        return response
+    except Exception as e:
+        logger.error(f"Error creating solution idea: {e}")
+        return f"Error creating solution idea: {e}"
+
 
 
 

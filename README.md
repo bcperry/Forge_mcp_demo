@@ -3,8 +3,6 @@
 
 This repo provides a FastMCP application and a FastAPI stub for testing and development of MCP wrappers for REST APIs.
 
-![system diagram](diagram.png)
-
 ## Local Development
 
 This project includes both a stub API and a FastMCP wrapper for local development and testing.
