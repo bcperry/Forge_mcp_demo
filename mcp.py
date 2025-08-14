@@ -241,7 +241,7 @@ async def create_solution_idea(
     GapCategoryIds: Annotated[list[str], Field(description="List of gap category IDs")],
     OcrProponentIds: Annotated[list[str], Field(description="List of OCR proponent organization IDs")],
     OrgGuid: Annotated[str, Field(description="Organization GUID")],
-    WorkflowStepId: Annotated[int, Field(description="Workflow step ID")] = 0,
+    # WorkflowStepId: Annotated[int, Field(description="Workflow step ID")] = 0,
     ClassificationGuid: Annotated[str, Field(description="Classification GUID")] = None,
     SolutionIdeaId: Annotated[str, Field(description="Solution Idea ID")] = None,
     FcwConceptId: Annotated[str, Field(description="FCW Concept ID")] = None,
@@ -271,7 +271,7 @@ async def create_solution_idea(
             "GapCategoryIds": GapCategoryIds,
             "OcrProponentIds": OcrProponentIds,
             "OrgGuid": OrgGuid,
-            "WorkflowStepId": WorkflowStepId,
+            # "WorkflowStepId": WorkflowStepId,
             "ClassificationGuid": ClassificationGuid
         }
     }
