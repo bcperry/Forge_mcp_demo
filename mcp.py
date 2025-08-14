@@ -262,7 +262,8 @@ async def create_solution_idea(
     # SolutionIdeaId: Annotated[str, Field(description="Solution Idea ID (auto-generated if not provided). Example: 'solution-123-guid'")] = None,
     # FcwConceptId: Annotated[str, Field(description="FCW Concept ID if related to a Future Combat Vehicle concept. Example: 'fcw-concept-456-guid'")] = None,
     # CrcEchelonIds: Annotated[str, Field(description="List of CRC echelon IDs. Example: ['echelon-1-guid', 'echelon-2-guid']")] = None,
-    # PossibleIocDate: Annotated[str, Field(description="Possible Initial Operating Capability date in ISO format. Example: '2025-08-31T04:00:00.000Z'")] = None,
+    PossibleIocDate: Annotated[str, Field(description="Possible Initial Operating Capability date in ISO format. Example: '2025-08-31T04:00:00.000Z'")],
+    
     # IsSnt: Annotated[bool, Field(description="Is SNT (Science and Technology) flag. Example: false")] = False,
     # CriticalPath: Annotated[bool, Field(description="Is on critical path flag. Example: false")] = False
 ) -> str | None:
@@ -332,16 +333,16 @@ async def create_solution_idea(
             "ShortName": ShortName,
             "Description": Description,
             "DomainId": DomainId,
-            # "FcwConceptId": FcwConceptId,
-            # "CrcEchelonIds": CrcEchelonIds or [],
-            # "PossibleIocDate": PossibleIocDate,
-            # "IsSnt": IsSnt,
-            # "CriticalPath": CriticalPath,
+            "PossibleIocDate": PossibleIocDate,
             "GapCategoryIds": gap_category_list,
             "OcrProponentIds": ocr_proponent_list,
             "OrgGuid": OrgGuid,
-            # "WorkflowStepId": WorkflowStepId,
-            # "ClassificationGuid": ClassificationGuid
+            "FcwConceptId": None,
+            "CrcEchelonIds": None,
+            "IsSnt": None,
+            "CriticalPath": None,
+            "WorkflowStepId": None,
+            "ClassificationGuid": None
         }
     }
 
