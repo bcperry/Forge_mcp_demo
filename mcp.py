@@ -315,7 +315,7 @@ async def get_required_solution_idea_data() -> dict | None:
     - warfightingGaps: List of warfighting gap categories with Key, Value, Code
     """
     OPR_OCR_ENDPOINT = "/api/lookuptables/organizations"
-    IDEA_TYPE_ENDPOINT = "/api/lookuptables/ideaTypes"
+    IDEA_TYPE_ENDPOINT = "/api/lookuptables/domains"
     WAR_FIGHTING_GAP_CATEGORIES_ENDPOINT = "/api/lookuptables/listwarfightinggapcategories"
     
     try:
