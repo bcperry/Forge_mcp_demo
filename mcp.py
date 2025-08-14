@@ -258,7 +258,8 @@ async def create_solution_idea(
     """Create a solution idea in the Forge Pathfinder system.
     
     This tool creates a new solution idea with RSA (Requirements Solution Analysis) mapping
-    that can be used to address capability gaps identified in assessments.
+    that can be used to address capability gaps identified in assessments. Ensure that you have retrieved the
+    mandatory solution information before using this tool, and only use that data as inputs.
     """
     
     solution_idea = RsaSolutionIdeaDto(
