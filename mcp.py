@@ -5,6 +5,7 @@ import logging
 from fastmcp import FastMCP
 from pydantic import BaseModel, Field
 from typing import Optional, Annotated
+import json
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -298,8 +299,50 @@ async def create_solution_idea(
         logger.error(f"Error creating solution idea: {e}")
         return f"Error creating solution idea: {e}"
 
-
-
+@mcp.tool()
+async def get_required_solution_idea_data() -> dict | None:
+    """Get organization and idea type data for solution ideas from the Forge API.
+    
+    Returns a dictionary containing:
+    - organizations: List of organization objects with OrganizationGuid, OrganizationName, etc.
+    - ideaTypes: List of domain/idea type objects with DomainId, DomainCode, DomainText, etc.
+    """
+    OPR_OCR_ENDPOINT = "/api/lookuptables/organizations"
+    IDEA_TYPE_ENDPOINT = "/api/lookuptables/ideaTypes"
+    
+    try:
+        
+        
+        # Fetch organizations data
+        opr_response = await make_request(f"{FORGE_API_BASE}{OPR_OCR_ENDPOINT}", method=HttpMethod.GET)
+        organizations = []
+        if opr_response and isinstance(opr_response, str):
+            parsed_opr_response = json.loads(opr_response)
+            if "data" in parsed_opr_response and "data" in parsed_opr_response["data"]:
+                organizations = parsed_opr_response["data"]["data"]
+            else:
+                logger.warning("Unexpected organization response structure")
+        
+        # Fetch idea types data
+        idea_type_response = await make_request(f"{FORGE_API_BASE}{IDEA_TYPE_ENDPOINT}", method=HttpMethod.GET)
+        idea_types = []
+        if idea_type_response and isinstance(idea_type_response, str):
+            parsed_idea_response = json.loads(idea_type_response)
+            if "data" in parsed_idea_response and "data" in parsed_idea_response["data"]:
+                idea_types = parsed_idea_response["data"]["data"]
+            else:
+                logger.warning("Unexpected idea type response structure")
+        
+        # Return combined data
+        return {
+            "organizations": organizations,
+            "ideaTypes": idea_types
+        }
+        
+    except Exception as e:
+        logger.error(f"Error fetching solution idea data: {e}")
+        return None
+    
 
 
 
