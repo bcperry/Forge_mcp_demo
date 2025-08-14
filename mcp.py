@@ -144,109 +144,109 @@ async def make_request(url: str, method: HttpMethod, params: dict[str, Any] | No
             logger.error(f"(make_request) Error making request: {e}")
             return f'Error: {e}'
 
-@mcp.tool()
-# async def create_concept(concept: ConceptGeneralInformationDto) -> list[dict[str, Any]]:  This should work, but it seems to be a bug in FastMCP
-async def create_concept(PocId: Annotated[str, Field(description="Point of Contact ID")],
-    DiscoverabilityGuid: Annotated[str, Field(description="Discoverability GUID")],
-    StatusId: Annotated[str, Field(description="Status ID")],
-    AocYear: Annotated[str, Field(description="Area of Concern Year")],
-    TypeGuid: Annotated[str, Field(description="Type GUID")],
-    LeadOrganizationId: Annotated[str, Field(description="Lead Organization ID")],
-    Id: Annotated[int, Field(description="ID")],
-    Name: Annotated[str, Field(min_length=5)],
-    StatusDescription: Annotated[str, Field(description="Status Description")] = None,
-    AocYearString: Annotated[str, Field(description="Area of Concern Year (in YYYY)") ] = None,
-    LearningYear: Annotated[str, Field(description="Learning Year (in YYYY)")] = None,
-    LearningYearString: Annotated[str, Field(description="Learning Year String (ex. FEB061991)")] = None,
-    AdditionalLeadOrganizations: Annotated[list, Field(description="A comma separated list of additional Lead Organizations, provided in square brackets ex: [<ID1>, <ID2>]")] = None,
-    SupportingOrganizationId: Annotated[str, Field(description="Supporting Organization ID")] = None,
-    AdditionalSupportingOrganizations: Annotated[list, Field(description="A comma separated list of additional Supporting Organizations, provided in square brackets ex: [<ID1>, <ID2>]")] = None,
-    FormationIds: Annotated[list, Field(description="Formation IDs")] = None,
-    OrganizationDescription: Annotated[str, Field(description="Organization Description")] = None,
-    OperationalChanges: Annotated[str, Field(description="Operational Changes")] = None,
-    Mission: Annotated[str, Field(description="Mission")] = None,
-    Hypothesis: Annotated[str, Field(description="Hypothesis")] = None,
-    Purpose: Annotated[str, Field(description="Purpose")] = None,
-    Scope: Annotated[str, Field(description="Scope")] = None,
-    Image: Annotated[str, Field(description="Image")] = None,
-    ModifiedDate: Annotated[str, Field(description="Modified Date")] = None,
-    LastModifiedDate: Annotated[str, Field(description="Last Modified Date")] = None,
-    CreatorName: Annotated[str, Field(description="Creator Name")] = None,
-    CreatorEmail: Annotated[str, Field(description="Creator Email")] = None,
-    CreatorPhone: Annotated[str, Field(description="Creator Phone")] = None,
-    PocName: Annotated[str, Field(description="Point of Contact Name")] = None,
-    PocEmail: Annotated[str, Field(description="Point of Contact Email")] = None,
-    PocPhone: Annotated[str, Field(description="Point of Contact Phone")] = None,
-    OrganizationSize: Annotated[int, Field(description="Organization Size integer to the nearest 1000")] = None,
-    ConceptNotionTypeId: Annotated[str, Field(description="Concept Notion Type ID")] = None,
-    ShortTitle: Annotated[str, Field(description="Short Title")] = None,
-    IsFcw: bool = False) -> str | None:
-    """Create a concept for use in the Forge application.
-    """
+# @mcp.tool()
+# # async def create_concept(concept: ConceptGeneralInformationDto) -> list[dict[str, Any]]:  This should work, but it seems to be a bug in FastMCP
+# async def create_concept(PocId: Annotated[str, Field(description="Point of Contact ID")],
+#     DiscoverabilityGuid: Annotated[str, Field(description="Discoverability GUID")],
+#     StatusId: Annotated[str, Field(description="Status ID")],
+#     AocYear: Annotated[str, Field(description="Area of Concern Year")],
+#     TypeGuid: Annotated[str, Field(description="Type GUID")],
+#     LeadOrganizationId: Annotated[str, Field(description="Lead Organization ID")],
+#     Id: Annotated[int, Field(description="ID")],
+#     Name: Annotated[str, Field(min_length=5)],
+#     StatusDescription: Annotated[str, Field(description="Status Description")] = None,
+#     AocYearString: Annotated[str, Field(description="Area of Concern Year (in YYYY)") ] = None,
+#     LearningYear: Annotated[str, Field(description="Learning Year (in YYYY)")] = None,
+#     LearningYearString: Annotated[str, Field(description="Learning Year String (ex. FEB061991)")] = None,
+#     AdditionalLeadOrganizations: Annotated[list, Field(description="A comma separated list of additional Lead Organizations, provided in square brackets ex: [<ID1>, <ID2>]")] = None,
+#     SupportingOrganizationId: Annotated[str, Field(description="Supporting Organization ID")] = None,
+#     AdditionalSupportingOrganizations: Annotated[list, Field(description="A comma separated list of additional Supporting Organizations, provided in square brackets ex: [<ID1>, <ID2>]")] = None,
+#     FormationIds: Annotated[list, Field(description="Formation IDs")] = None,
+#     OrganizationDescription: Annotated[str, Field(description="Organization Description")] = None,
+#     OperationalChanges: Annotated[str, Field(description="Operational Changes")] = None,
+#     Mission: Annotated[str, Field(description="Mission")] = None,
+#     Hypothesis: Annotated[str, Field(description="Hypothesis")] = None,
+#     Purpose: Annotated[str, Field(description="Purpose")] = None,
+#     Scope: Annotated[str, Field(description="Scope")] = None,
+#     Image: Annotated[str, Field(description="Image")] = None,
+#     ModifiedDate: Annotated[str, Field(description="Modified Date")] = None,
+#     LastModifiedDate: Annotated[str, Field(description="Last Modified Date")] = None,
+#     CreatorName: Annotated[str, Field(description="Creator Name")] = None,
+#     CreatorEmail: Annotated[str, Field(description="Creator Email")] = None,
+#     CreatorPhone: Annotated[str, Field(description="Creator Phone")] = None,
+#     PocName: Annotated[str, Field(description="Point of Contact Name")] = None,
+#     PocEmail: Annotated[str, Field(description="Point of Contact Email")] = None,
+#     PocPhone: Annotated[str, Field(description="Point of Contact Phone")] = None,
+#     OrganizationSize: Annotated[int, Field(description="Organization Size integer to the nearest 1000")] = None,
+#     ConceptNotionTypeId: Annotated[str, Field(description="Concept Notion Type ID")] = None,
+#     ShortTitle: Annotated[str, Field(description="Short Title")] = None,
+#     IsFcw: bool = False) -> str | None:
+#     """Create a concept for use in the Forge application.
+#     """
     
-    logger.info("=== MCP TOOL CALLED: create_concept ===")
-    print("=== MCP TOOL CALLED: create_concept ===")  # Force to stdout
+#     logger.info("=== MCP TOOL CALLED: create_concept ===")
+#     print("=== MCP TOOL CALLED: create_concept ===")  # Force to stdout
     
-    concept = ConceptGeneralInformationDto(
-        Id=Id,
-        Name=Name,
-        DiscoverabilityGuid=DiscoverabilityGuid,
-        StatusId=StatusId,
-        StatusDescription=StatusDescription,
-        AocYear=AocYear,
-        AocYearString=AocYearString,
-        LearningYear=LearningYear,
-        LearningYearString=LearningYearString,
-        TypeGuid=TypeGuid,
-        LeadOrganizationId=LeadOrganizationId,
-        AdditionalLeadOrganizations=AdditionalLeadOrganizations,
-        SupportingOrganizationId=SupportingOrganizationId,
-        AdditionalSupportingOrganizations=AdditionalSupportingOrganizations,
-        FormationIds=FormationIds,
-        OrganizationDescription=OrganizationDescription,
-        OperationalChanges=OperationalChanges,
-        Mission=Mission,
-        Hypothesis=Hypothesis,
-        Purpose=Purpose,
-        Scope=Scope,
-        Image=Image,
-        ModifiedDate=ModifiedDate,
-        LastModifiedDate=LastModifiedDate,
-        CreatorName=CreatorName,
-        CreatorEmail=CreatorEmail,
-        CreatorPhone=CreatorPhone,
-        PocId=PocId,
-        PocName=PocName,
-        PocEmail=PocEmail,
-        PocPhone=PocPhone,
-        OrganizationSize=OrganizationSize,
-        ConceptNotionTypeId=ConceptNotionTypeId,
-        ShortTitle=ShortTitle,
-        IsFcw=IsFcw
-    )
+#     concept = ConceptGeneralInformationDto(
+#         Id=Id,
+#         Name=Name,
+#         DiscoverabilityGuid=DiscoverabilityGuid,
+#         StatusId=StatusId,
+#         StatusDescription=StatusDescription,
+#         AocYear=AocYear,
+#         AocYearString=AocYearString,
+#         LearningYear=LearningYear,
+#         LearningYearString=LearningYearString,
+#         TypeGuid=TypeGuid,
+#         LeadOrganizationId=LeadOrganizationId,
+#         AdditionalLeadOrganizations=AdditionalLeadOrganizations,
+#         SupportingOrganizationId=SupportingOrganizationId,
+#         AdditionalSupportingOrganizations=AdditionalSupportingOrganizations,
+#         FormationIds=FormationIds,
+#         OrganizationDescription=OrganizationDescription,
+#         OperationalChanges=OperationalChanges,
+#         Mission=Mission,
+#         Hypothesis=Hypothesis,
+#         Purpose=Purpose,
+#         Scope=Scope,
+#         Image=Image,
+#         ModifiedDate=ModifiedDate,
+#         LastModifiedDate=LastModifiedDate,
+#         CreatorName=CreatorName,
+#         CreatorEmail=CreatorEmail,
+#         CreatorPhone=CreatorPhone,
+#         PocId=PocId,
+#         PocName=PocName,
+#         PocEmail=PocEmail,
+#         PocPhone=PocPhone,
+#         OrganizationSize=OrganizationSize,
+#         ConceptNotionTypeId=ConceptNotionTypeId,
+#         ShortTitle=ShortTitle,
+#         IsFcw=IsFcw
+#     )
 
 
-    TOOL_ENDPOINT = "/api/Concept/Create"
-    try:
-        # Convert Pydantic model to dictionary for JSON serialization
-        concept_dict = concept.model_dump()
-        logger.info(f"Creating concept with data: {concept_dict}")
-        print(f"Creating concept with data: {concept_dict}")  # Force to stdout
-        response = await make_request(f"{FORGE_API_BASE}{TOOL_ENDPOINT}", method=HttpMethod.POST, params=concept_dict)
+#     TOOL_ENDPOINT = "/api/Concept/Create"
+#     try:
+#         # Convert Pydantic model to dictionary for JSON serialization
+#         concept_dict = concept.model_dump()
+#         logger.info(f"Creating concept with data: {concept_dict}")
+#         print(f"Creating concept with data: {concept_dict}")  # Force to stdout
+#         response = await make_request(f"{FORGE_API_BASE}{TOOL_ENDPOINT}", method=HttpMethod.POST, params=concept_dict)
         
-        # Parse the JSON response to return the actual data
-        if response and isinstance(response, str):
-            import json
-            try:
-                parsed_response = json.loads(response)
-                return parsed_response
-            except json.JSONDecodeError:
-                logger.error(f"Failed to parse JSON response: {response}")
-                return response
-        return response
-    except Exception as e:
-        logger.error(f"Error creating concept: {e}")
-        return f"Error creating concept: {e}"
+#         # Parse the JSON response to return the actual data
+#         if response and isinstance(response, str):
+#             import json
+#             try:
+#                 parsed_response = json.loads(response)
+#                 return parsed_response
+#             except json.JSONDecodeError:
+#                 logger.error(f"Failed to parse JSON response: {response}")
+#                 return response
+#         return response
+#     except Exception as e:
+#         logger.error(f"Error creating concept: {e}")
+#         return f"Error creating concept: {e}"
 
 @mcp.tool()
 async def create_solution_idea(
@@ -257,13 +257,13 @@ async def create_solution_idea(
     OcrProponentIds: Annotated[list[str], Field(description="List of OCR proponent organization IDs. Example: ['94df18c7-3f93-400e-9196-a2de00d79315']")],
     OrgGuid: Annotated[str, Field(description="Organization GUID of the primary organization. Example: '94df18c7-3f93-400e-9196-a2de00d79315'")],
     # WorkflowStepId: Annotated[int, Field(description="Workflow step ID")] = 0,
-    ClassificationGuid: Annotated[str, Field(description="Classification GUID for security classification. Example: '44af16dd-5bdd-ee11-8076-0003ff0c7f2f'")] = None,
-    SolutionIdeaId: Annotated[str, Field(description="Solution Idea ID (auto-generated if not provided). Example: 'solution-123-guid'")] = None,
-    FcwConceptId: Annotated[str, Field(description="FCW Concept ID if related to a Future Combat Vehicle concept. Example: 'fcw-concept-456-guid'")] = None,
-    CrcEchelonIds: Annotated[list[str], Field(description="List of CRC echelon IDs. Example: ['echelon-1-guid', 'echelon-2-guid']")] = None,
-    PossibleIocDate: Annotated[str, Field(description="Possible Initial Operating Capability date in ISO format. Example: '2025-08-31T04:00:00.000Z'")] = None,
-    IsSnt: Annotated[bool, Field(description="Is SNT (Science and Technology) flag. Example: false")] = False,
-    CriticalPath: Annotated[bool, Field(description="Is on critical path flag. Example: false")] = False
+    # ClassificationGuid: Annotated[str, Field(description="Classification GUID for security classification. Example: '44af16dd-5bdd-ee11-8076-0003ff0c7f2f'")] = None,
+    # SolutionIdeaId: Annotated[str, Field(description="Solution Idea ID (auto-generated if not provided). Example: 'solution-123-guid'")] = None,
+    # FcwConceptId: Annotated[str, Field(description="FCW Concept ID if related to a Future Combat Vehicle concept. Example: 'fcw-concept-456-guid'")] = None,
+    # CrcEchelonIds: Annotated[list[str], Field(description="List of CRC echelon IDs. Example: ['echelon-1-guid', 'echelon-2-guid']")] = None,
+    # PossibleIocDate: Annotated[str, Field(description="Possible Initial Operating Capability date in ISO format. Example: '2025-08-31T04:00:00.000Z'")] = None,
+    # IsSnt: Annotated[bool, Field(description="Is SNT (Science and Technology) flag. Example: false")] = False,
+    # CriticalPath: Annotated[bool, Field(description="Is on critical path flag. Example: false")] = False
 ) -> str | None:
     """Create a solution idea in the Forge Pathfinder system.
     
@@ -277,20 +277,20 @@ async def create_solution_idea(
     # Create the payload structure matching the required format
     payload = {
         "GeneralInformation": {
-            "SolutionIdeaId": SolutionIdeaId,
+            # "SolutionIdeaId": SolutionIdeaId,
             "ShortName": ShortName,
             "Description": Description,
             "DomainId": DomainId,
-            "FcwConceptId": FcwConceptId,
-            "CrcEchelonIds": CrcEchelonIds or [],
-            "PossibleIocDate": PossibleIocDate,
-            "IsSnt": IsSnt,
-            "CriticalPath": CriticalPath,
+            # "FcwConceptId": FcwConceptId,
+            # "CrcEchelonIds": CrcEchelonIds or [],
+            # "PossibleIocDate": PossibleIocDate,
+            # "IsSnt": IsSnt,
+            # "CriticalPath": CriticalPath,
             "GapCategoryIds": GapCategoryIds,
             "OcrProponentIds": OcrProponentIds,
             "OrgGuid": OrgGuid,
             # "WorkflowStepId": WorkflowStepId,
-            "ClassificationGuid": ClassificationGuid
+            # "ClassificationGuid": ClassificationGuid
         }
     }
 
